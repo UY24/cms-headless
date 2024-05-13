@@ -62,6 +62,13 @@ button[type="submit"] {
   cursor: pointer;
 }
 
+.invalid {
+  border-color: red;
+}
+.helper-text{
+  color: red;
+}
+
 /* Animation styles */
 @keyframes modalOpenAnimation {
   0% {

@@ -5,18 +5,33 @@ import "./Modal.css";
 
 const Modal = ({ title, onSubmit, onClose, initialValues }) => {
   const [formData, setFormData] = useState(initialValues);
+  const [phoneValid, setPhoneValid] = useState(true);
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value } = e.target;
+
+    if (name === "phone") {
+      if (!/^\d*$/.test(value)) {
+        setPhoneValid(false);
+        return;
+      } else {
+        setPhoneValid(true);
+      }
+    }
+    setFormData({ ...formData, [name]: value });
   };
-  
+
   const handleDateChange = (date) => {
     setFormData({ ...formData, dob: date });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      await onSubmit(formData);
+    } catch (error) {
+      console.error("Error submitting formascascascs:", error);
+    }
   };
 
   return (
@@ -39,7 +54,7 @@ const Modal = ({ title, onSubmit, onClose, initialValues }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="email">Email</label>
+            <label htmlFor="email">Email Address</label>
             <input
               type="email"
               id="email"
@@ -50,18 +65,20 @@ const Modal = ({ title, onSubmit, onClose, initialValues }) => {
             />
           </div>
           <div className="form-group">
-            <label htmlFor="phone">Phone</label>
+            <label htmlFor="phone">Phone Number</label>
             <input
               type="tel"
               id="phone"
               name="phone"
               value={formData.phone}
+              className={phoneValid ? "" : "invalid"}
               onChange={handleChange}
               required
             />
+            {!phoneValid && <p className="helper-text">Invalid Phone no.</p>}
           </div>
           <div className="form-group">
-            <label htmlFor="dob">DOB</label>
+            <label htmlFor="dob">Date of Birth</label>
             <DatePicker
               id="dob"
               name="dob"
